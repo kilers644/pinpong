@@ -1,12 +1,9 @@
-from pygame import*
-from random import*
+from pygame import
 game = True
 clock = time.Clock() 
 okno = display.set_mode((1250,620)) 
 display.set_caption("Зомби дети")
 ara = transform.scale(image.load("hon.png"),(1280,520)) 
-ara2 = transform.scale(image.load("hon.png"),(1280,520)) 
-ara3 = transform.scale(image.load("hon.png"),(1280,520)) 
 
 class GameSprite(sprite.Sprite):
     def __init__(self, img, x,y):
@@ -18,28 +15,6 @@ class GameSprite(sprite.Sprite):
         self.rect.y = y
     def ris(self):
         okno.blit((self.image), (self.rect.x, self.rect.y))
-
-class pula(sprite.Sprite):
-    def __init__(self, img, x,y):
-        super().__init__()
-        self.image = transform.scale(image.load(img), (50, 100))
-        self.rect = self.image.get_rect()   
-        self.rect.x = x 
-        self.rect.y = y
-    def letit(self):
-        okno.blit((self.image), (self.rect.x, self.rect.y))
-        self.rect.x += 10
-
-class pulavrags(sprite.Sprite):
-    def __init__(self, img, x,y):
-        super().__init__()
-        self.image = transform.scale(image.load(img), (50, 100)) 
-        self.rect = self.image.get_rect()   
-        self.rect.x = x 
-        self.rect.y = y
-    def letit(self):
-        okno.blit((self.image), (self.rect.x, self.rect.y))
-        self.rect.x -= 5
 
 class ship(GameSprite): 
     def control(self):
@@ -53,70 +28,26 @@ class ship(GameSprite):
         if knopka[K_RIGHT] and self.rect.x < 1200:
             self.rect.x += 5
 
-points = 25
-class enemy(GameSprite):
-    def taran(self):
-        self.ris()
-        self.rect.x -= 5
-        if self.rect.x < 0:
-            global points
-            points -= 5
-            self.rect.x = 1200
-            self.rect.y = randint(0,360)
-
-pv = [pulavrags('pulya.png', 1690,350)]
-
-#mixer.init()
-#fonov = mixer.Soand('Sinfonia 3.mp3')
-#fonov.set_volume(0.5)
-#fonov.play()
-
-musicon = 1
-
-a = 0
-b = "Убито зомби-детей: 0"
-c = 'Жизни: 5'
-d = 'Очки: 25'
-e = randint(0,3)
-x1 = 0
+c = 'Забил игрок 1: 0'
+d = 'Забил игрок 2: 0'
 finish = False
 
 font.init()
-lives = 5
+points1 = 0
+points2 = 0
 UI = font.SysFont(None,40)
 
 geroi = ship('kora.png', 690,350)
 pulya = pula('pulya.png', 1690,350)
 pulya1 = pula('pulya.png', 1690,250)
-vragi = [
-enemy('baby.png', 1200,1360),
-enemy('baby.png', 1200,1360),
-enemy('baby.png', 1200,1360)]
 
-#v = mixer.Sound('srelba.ogg')
-
-vragi2 = []
-for i in range(5):
-    en = enemy('baby.png', 1200,i*100)
-    vragi2.append(en)
 
 while game:
-#    if musicon == 1:
-#        mixer.music.unpause()
-#    else:
-#        mixer.music.pause()
     for i in event.get():  
         if i.type == QUIT: 
             game = False
         if i.type == KEYUP:
-            if i.key == K_p:
-                if musicon == 1:
-                    musicon = 0
-                else:
-                    musicon = 1
-        if i.type == KEYUP:
             if i.key == K_SPACE and pulya.rect.x > 1130:
-#                v.play()
                 pulya.rect.x = geroi.rect.x 
                 pulya.rect.y = geroi.rect.y + 40
             if i.key == K_SPACE and pulya1.rect.x > 1130:
@@ -152,41 +83,13 @@ while game:
     if points < 20 and len(vragi2)<5:
         for i in range(5):
             en = enemy('baby.png', 1200,i*100)
-            vragi2.append(en)   
-    b = 'Убито зомби-детей: '+ str(a)   
-    c = 'Жизни: '+ str(lives)
-    d = 'Очки:'+ str(points)
-    zhizni = UI.render(c,True,(255,255,0))
-    ochki = UI.render(d,True,(255,255,0))
-    kills = UI.render(b,True,(255,255,0))
-    okno.blit(zhizni,(1100,30))
-    okno.blit(kills,(30,30))
-    okno.blit(ochki,(500,30))
-    for i in vragi:
-        i.taran()
-        if sprite.collide_rect(pulya,i):
-            i.rect.x = 1200 
-            i.rect.y = randint(0,360)
-            a += 1
-            points += 1
-        if sprite.collide_rect(pulya1,i):
-            i.rect.x = 1200 
-            i.rect.y = randint(0,360)
-            a += 1
-            points += 1
-        if sprite.collide_rect(geroi,i):
-            i.rect.x = 1200
-            i.rect.y = randint(0,450)
-            lives -= 1
-            points-=1
-        if lives < 1 or points < 1:
-            game = False
-            finish = True
-    x1 -= 1
-    if x1> 1279:
-        x1 =0
-    if x1< -1279:
-        x1 =0   
+            vragi2.append(en)     
+    c = 'Забил игрок 1:'+ str(points1)
+    d = 'Забил игрок 2:'+ str(points2)
+    ochki1 = UI.render(c,True,(255,255,0))
+    ochki2 = UI.render(d,True,(255,255,0))
+    okno.blit(ochki1,(30,30))
+    okno.blit(ochki2,(1100,30))
     display.update()
 
 font.init()
